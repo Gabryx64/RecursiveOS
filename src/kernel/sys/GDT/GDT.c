@@ -34,7 +34,7 @@ void GDT_init()
 {
     gdt[1] = (struct gdt_descriptor){ .access = 0b10011010, .granularity = 0b00100000 };
     gdt[2] = (struct gdt_descriptor){ .access = 0b10010010, .granularity = 0 };
-    // log(INFO, "Loading GDT...");
+    puts(L"Loading GDT...");
     GDT_load();
-    // log(INFO, "GDT loaded!");
+    puts(L"GDT loaded!");
 }

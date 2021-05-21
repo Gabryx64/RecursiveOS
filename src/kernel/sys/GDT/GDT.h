@@ -1,6 +1,7 @@
 #ifndef GDT_H
 #define GDT_H 1
-#include <stdint.h>
+#include<stdint.h>
+#include"io.h"
 
 struct gdt_pointer
 {

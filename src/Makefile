@@ -1,6 +1,7 @@
 KERNEL := kernel.elf
 
 CC = clang
+ASSEMBLER = nasm
 
 CFLAGS = -Wall -Wextra -O2 -pipe -target x86_64-unknown-pc
 
@@ -23,7 +24,8 @@ INTERNALCFLAGS  :=       						\
 	-mno-red-zone
 
 CFILES := $(shell find ./ -type f -name '*.c')
-OBJ    := $(CFILES:.c=.o)
+ASMFILES := $(shell find ./ -type f -name '*.asm')
+OBJ    := $(CFILES:.c=.o) $(ASMFILES:.asm=.o)
 
 .PHONY: all clean
 
@@ -37,6 +39,9 @@ stivale2.h:
 
 %.o: %.c stivale2.h
 	$(CC) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+
+%.o: %.asm
+	$(ASSEMBLER) -felf64 $< -o $@
 
 clean:
 	rm -rf $(KERNEL) $(OBJ)

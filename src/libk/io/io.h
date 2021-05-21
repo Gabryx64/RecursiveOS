@@ -12,6 +12,10 @@
 
 extern int current_col, current_row;
 
+void outb(uint16_t port, uint8_t val);
+uint8_t inb(uint16_t port);
+void io_wait(void);
+
 int snapped_putch(wchar_t ch, int column, int row, Color fg, Color bg);
 int putchar(wchar_t ch);
 int printf(const wchar_t* restrict format, ...);

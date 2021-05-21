@@ -19,5 +19,6 @@ void kmain(void)
     puts(L"Willkommen!");
     puts(L"かんげい!");
     puts(L"Benvenuto!");
-    puts(L"καλως ΗΡΘΑΤΕ");
+    puts(L"καλώς ήρθατε");
+    puts(L"\u0386 \u0387 \u0388 \u0389 \u038A \u038C \u038E \u038F");
 }
