@@ -45,4 +45,4 @@ stivale2.h:
 	$(ASSEMBLER) -felf64 $< -o $@
 
 clean:
-	rm -rf $(KERNEL) $(OBJ)
+	rm -rf $(KERNEL) $(shell find ./ -type f -name '*.o') $(shell find ./ -type f -name '*.elf')
