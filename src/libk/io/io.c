@@ -21,6 +21,13 @@ void io_wait(void)
     asm volatile ( "outb %%al, $0x80" : : "a"(0) );
 }
 
+void clearterm()
+{
+    clearscreen(bg_col);
+    current_col = 0;
+    current_row = 0;
+}
+
 int snapped_putch(wchar_t ch, int column, int row, Color fg, Color bg)
 {
     int x = column * 8, y = row * 8;
@@ -77,7 +84,8 @@ static bool print(const wchar_t* data, size_t length)
 
 	return true;
 }
- 
+
+
 int printf(const wchar_t* restrict format, ...)
 {
 	va_list parameters;
@@ -146,6 +154,27 @@ int printf(const wchar_t* restrict format, ...)
 
 			written += len;
 		}
+		/*else if(*format == L'm')
+		{
+			format++;
+
+			if(*format == L'b')
+            {
+		    	format++;
+		    	wchar_t c = u8towc(va_arg(parameters, utf8_t));
+
+		    	if(!maxrem)
+                {
+		    		return -1;
+		    	}
+
+		    	if(!print(&c, sizeof(c)))
+		    		return -1;
+		    	written++;
+		    }
+
+			format--;
+		}*/
         else if(*format == L'l')
         {
 			format++;
@@ -160,7 +189,7 @@ int printf(const wchar_t* restrict format, ...)
 		    		return -1;
 		    	}
 
-		    	if(!print(&c, sizeof(c)))
+		    	if(!print((&c), sizeof(c)))
 		    		return -1;
 		    	written++;
 		    }

@@ -5,11 +5,11 @@ volatile struct gdt_pointer gdtr = { .limit = sizeof(gdt) - 1, .base = (uint64_t
 
 void GDT_load()
 {
-    __asm__ volatile("lgdt %0"
+    asm volatile("lgdt %0"
                      :
                      : "m"(gdtr)
                      : "memory");
-    __asm__ volatile(
+    asm volatile(
         "mov %%rsp, %%rax\n"
         "push $0x10\n"
         "push %%rax\n"

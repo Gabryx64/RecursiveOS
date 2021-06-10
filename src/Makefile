@@ -3,7 +3,7 @@ KERNEL := kernel.elf
 CC = clang
 ASSEMBLER = nasm
 
-CFLAGS = -Wall -Wextra -O2 -pipe -target x86_64-unknown-pc
+CFLAGS = -Wall -Wextra -O2 -pipe -target x86_64-unknown-pc -g
 
 INTERNALLDFLAGS := 								\
 	-fno-pic -fno-pie							\
@@ -18,6 +18,7 @@ INTERNALCFLAGS  :=       						\
 	-Ikernel/graphics							\
 	$(foreach d, $(wildcard libk/**), -I$d)		\
 	-std=gnu17           						\
+	-nostdlib      								\
 	-ffreestanding       						\
 	-fno-stack-protector 						\
 	-fno-pic -fpie      						\

@@ -20,7 +20,6 @@ size_t wstrlen(const wchar_t* str)
 	return len;
 }
 
-
 int memcmp(const void* aptr, const void* bptr, size_t size)
 {
 	const uint8_t* a = (const uint8_t*)aptr;

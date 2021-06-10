@@ -3,6 +3,8 @@
 #include<stivale2.h>
 #include"sys.h"
 #include"GDT/GDT.h"
+#include"IDT/IDT.h"
+#include"PMM/PMM.h"
 
 static uint8_t stack[4096];
 
@@ -64,7 +66,8 @@ void _start(struct stivale2_struct *stivale2_struct)
 
     fb = (uint32_t*)fb_tag->framebuffer_addr;
 
-    
+    IDT_init();
+    // PMM_init(); // TODO: fix PMM
 
     kmain();
 

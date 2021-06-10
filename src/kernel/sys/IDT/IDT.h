@@ -1,13 +1,8 @@
 #ifndef IDT_H
 #define IDT_H 1
-
-#define IDT_SIZE 256
-#define INTERRUPT_GATE 0x8e
-#define KERNEL_CODE_SEGMENT_OFFSET 0x08
-
 #include<stddef.h>
 #include<stdint.h>
-#include"sys/exceptions.h"
+#include<io.h>
 
 extern void isr(void);
 extern void isr_irq_master(void);

@@ -261,7 +261,14 @@ static uint8_t font[][8] =
     { 0x00, 0x38, 0x00, 0x33, 0x33, 0x3E, 0x30, 0x1F },     // U+00FD (y aigu)
     { 0x00, 0x00, 0x06, 0x3E, 0x66, 0x3E, 0x06, 0x00 },     // U+00FE (thorn)
     { 0x00, 0x33, 0x00, 0x33, 0x33, 0x3E, 0x30, 0x1F },     // U+00FF (y umlaut)
-	// TODO: implement characters U+0100-U+036F
+	/*
+        TODO: implement characters U+0100-U+036F:
+            * Latin Extended-A
+            * Latin Extended-B
+            * Ipa Extensions
+            * Spacing Modifier Letters
+            * Combining Diacritical Marks
+    */
     [0x0370] =
     { 0x08, 0x08, 0x08, 0x38, 0x08, 0x08, 0x08, 0x00 },     // U+0370 (Heta)
     { 0x00, 0x0C, 0x0A, 0x38, 0x08, 0x08, 0x08, 0x00 },     // U+0371 (heta)
@@ -353,7 +360,85 @@ static uint8_t font[][8] =
     { 0x00, 0x63, 0x36, 0x1C, 0x1C, 0x36, 0x63, 0x00 },     // U+03C7 (chi)
     { 0x00, 0x00, 0xDB, 0xDB, 0xDB, 0x7E, 0x18, 0x00 },     // U+03C8 (psi)
     { 0x00, 0x00, 0x36, 0x63, 0x6B, 0x7F, 0x36, 0x00 },     // U+03C9 (omega)
-	// TODO: implement characters U+03D0-U+24FF
+	/*
+        TODO: implement characters U+03D0-U+24FF:
+            * Greek and Coptic (wip)
+            * Cyrillic
+            * Cyrillic Supplement
+            * Armenian
+            * Hebrew
+            * Arabic
+            * Syriac
+            * Arabic Supplement
+            * Thaana
+            * NKo
+            * Samaritan
+            * Mandaic
+            * Syriac Supplement
+            * Arabic Extended-A
+            * Devanagari
+            * Bengali
+            * Gurmukhi
+            * Gujarata
+            * Oriya
+            * Tamil
+            * Telegu
+            * Kannada
+            * Malayalam
+            * Sinhala
+            * Thai
+            * Lao
+            * Tibetan
+            * Myanmar
+            * Georgian
+            * Hangul Jamo
+            * Ethiopic
+            * Ethiopic Supplement
+            * Cherokee
+            * Unified Canadian Aboriginal Syllabics
+            * Ogham
+            * Runic
+            * Tagalog
+            * Hanunoo
+            * Buhid
+            * Tagbanwa
+            * Khmer
+            * Mongolian
+            * Unified Canadian Aboriginal Syllabics Extended
+            * Limbu
+            * Tai Le
+            * New Tai Lue
+            * Khmer Symbols
+            * Buginese
+            * Tai Tham
+            * Combining Diacritical Marks Extended
+            * Balinese
+            * Sundanese
+            * Batak
+            * Lepcha
+            * Ol Chiki
+            * Cyrillic Extended C
+            * Georgian Extended
+            * Sundanese Supplement
+            * Vedic Extensions
+            * Phonetic Extensions
+            * Phonetic Extensions Supplement
+            * Combining Diacritical Marks Supplement
+            * Latin Extended Additional
+            * Greek Extended
+            * General Punctuation
+            * Superscripts and Subscripts
+            * Currency Symbols
+            * Combining Diacritical Marks for Symbols
+            * Letterlike Symbols
+            * Number Forms
+            * Arrows
+            * Mathematical Operators
+            * Miscellanous Technical
+            * Control Pictures
+            * Optical Character Recognition
+            * Enclosed Alphanumerics
+    */
     [0x2500] =
 	{ 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00 },     // U+2500 (thin horizontal)
     { 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x00 },     // U+2501 (thick horizontal)
@@ -515,7 +600,7 @@ static uint8_t font[][8] =
     { 0xF0, 0xF0, 0xF0, 0xF0, 0x00, 0x00, 0x00, 0x00 },     // U+259D (box top right)
     { 0xF0, 0xF0, 0xF0, 0xF0, 0x0F, 0x0F, 0x0F, 0x0F },     // U+259E (boxes top right and bottom left)
     { 0xF0, 0xF0, 0xF0, 0xF0, 0xFF, 0xFF, 0xFF, 0xFF },     // U+259F (boxes right and bottom)
-	// TODO: implement characters U+25A0-U+303F
+	// TODO: implement characters U+25A0-U+303F (no i will not list this rn)
     [0x3040] =
 	{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },     // U+3040
     { 0x04, 0x3F, 0x04, 0x3C, 0x56, 0x4D, 0x26, 0x00 },     // U+3041 (Hiragana a)
@@ -641,7 +726,7 @@ static uint8_t font[][8] =
     { 0x00, 0x00, 0x66, 0x30, 0x18, 0x0C, 0x06, 0x00 },     // U+E558 (SGA X)
     { 0x00, 0x00, 0x36, 0x36, 0x36, 0x36, 0x36, 0x00 },     // U+E559 (SGA Y)
     { 0x00, 0x00, 0x18, 0x3C, 0x66, 0x66, 0x66, 0x00 }      // U+E55A (SGA Z)
-	// TODO: implement characters U+E55B-U+FFFD
+	// TODO: implement characters U+E55B-U+FFF0
 };
 
 #endif

@@ -1,7 +1,11 @@
-#ifndef STR_H
-#define STR_H 1
+#ifndef LIBK_STR_H
+#define LIBK_STR_H 1
 #include<stddef.h>
 #include<stdint.h>
+#include<stdbool.h>
+#include"sys/sys.h"
+#include"utils.h"
+#include"mathutils.h"
 
 size_t strlen(const char*);
 size_t wstrlen(const wchar_t* str); 

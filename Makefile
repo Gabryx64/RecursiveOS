@@ -7,6 +7,9 @@ all: $(KERNEL_HDD)
 run: $(KERNEL_HDD)
 	qemu-system-x86_64 -M q35 -m 2G -drive file=$(KERNEL_HDD),format=raw
 
+debug: $(KERNEL_HDD)
+	qemu-system-x86_64 -M q35 -m 2G -drive file=$(KERNEL_HDD),format=raw -s -S
+
 echfs:
 	git clone https://github.com/limine-bootloader/limine --branch=master
 
