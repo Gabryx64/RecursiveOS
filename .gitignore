@@ -1,4 +1,5 @@
 .vscode
 *.o
 *.elf
-disk.hdd
+*.hdd
+*.iso

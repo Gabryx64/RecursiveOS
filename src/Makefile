@@ -3,7 +3,7 @@ KERNEL := kernel.elf
 CC = clang
 ASSEMBLER = nasm
 
-CFLAGS = -Wall -Wextra -O2 -pipe -target x86_64-unknown-pc -g
+CFLAGS = -Wall -Wextra -Ofast -Os -pipe -target x86_64-unknown-pc -g
 
 INTERNALLDFLAGS := 								\
 	-fno-pic -fno-pie							\

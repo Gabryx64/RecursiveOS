@@ -1,6 +1,13 @@
 #include"graphics.h"
 #include"font/font.h"
 
+Color UINT_RGB(uint32_t color)
+{
+    uint8_t* col = (uint8_t*)&color;
+
+    return RGB(col[2], col[1], col[0]);
+}
+
 void putpixel(int x, int y, Color color)
 {
     fb[x + y * 640] = getcolor(color);

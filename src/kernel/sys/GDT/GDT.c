@@ -6,9 +6,9 @@ volatile struct gdt_pointer gdtr = { .limit = sizeof(gdt) - 1, .base = (uint64_t
 void GDT_load()
 {
     asm volatile("lgdt %0"
-                     :
-                     : "m"(gdtr)
-                     : "memory");
+                    :
+                    : "m"(gdtr)
+                    : "memory");
     asm volatile(
         "mov %%rsp, %%rax\n"
         "push $0x10\n"

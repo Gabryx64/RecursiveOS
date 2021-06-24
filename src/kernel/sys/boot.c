@@ -30,15 +30,18 @@ static struct stivale2_header stivale_hdr =
     .tags = (uintptr_t)&framebuffer_hdr_tag
 };
 
-void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id) {
+void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
+{
     struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
-    for (;;)
+    while(1)
     {
-        if (current_tag == NULL) {
+        if(current_tag == NULL)
+        {
             return NULL;
         }
 
-        if (current_tag->identifier == id) {
+        if(current_tag->identifier == id)
+        {
             return current_tag;
         }
 
@@ -53,26 +56,21 @@ extern void kmain(void);
 void _start(struct stivale2_struct *stivale2_struct)
 {
     GDT_init();
+    IDT_init();
+    PMM_init(); // TODO: fix PMM
 
     fb_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 
     if (fb_tag == NULL)
     {
-        for (;;)
-        {
+        while(1)
             asm("hlt");
-        }
     }
 
     fb = (uint32_t*)fb_tag->framebuffer_addr;
 
-    IDT_init();
-    // PMM_init(); // TODO: fix PMM
-
     kmain();
 
-    for(;;)
-    {
+    while(1)
         asm("hlt");
-    }
 }

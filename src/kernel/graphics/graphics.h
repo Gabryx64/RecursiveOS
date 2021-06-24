@@ -5,7 +5,7 @@
 #include<wchar.h>
 #include"sys/sys.h"
 
-#define RGB(r, g, b) ((Color){ r, g, b })
+#define RGB(r, g, b) (Color){ r, g, b }
 #define getcolor(col) (((col.r & 0xff) << fb_tag->red_mask_shift) + ((col.g & 0xff) << fb_tag->green_mask_shift) + ((col.b & 0xff) << fb_tag->blue_mask_shift))
 
 typedef struct
@@ -13,6 +13,7 @@ typedef struct
     uint8_t r, g, b;
 } Color;
 
+Color UINT_RGB(uint32_t color);
 void putpixel(int x, int y, Color color);
 void clearscreen(Color col);
 void putch(wchar_t ch, int x, int y, Color fg, Color bg);
