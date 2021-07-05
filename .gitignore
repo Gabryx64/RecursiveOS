@@ -1,5 +1,7 @@
 .vscode
+iso_root/*
 *.o
 *.elf
 *.hdd
 *.iso
+!*.gitkeep
