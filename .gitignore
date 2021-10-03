@@ -1,6 +1,7 @@
 .vscode
 iso_root/*
 *.o
+*.d
 *.elf
 *.hdd
 *.iso

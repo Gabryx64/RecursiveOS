@@ -7,8 +7,8 @@ extern volatile uint32_t* fb;
 
 typedef enum
 {
-    US_QWERTY,
-    IT_WINKEYS,
+  US_QWERTY,
+  IT_WINKEYS,
 } KB_Layouts;
 
 #endif

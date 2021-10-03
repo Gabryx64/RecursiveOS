@@ -10,23 +10,13 @@ size_t strlen(const char* str)
 	return len;
 }
 
-size_t wstrlen(const wchar_t* str)
-{
-	size_t len = 0;
-
-	while(str[len])
-		len++;
-
-	return len;
-}
-
 int memcmp(const void* aptr, const void* bptr, size_t size)
 {
 	const uint8_t* a = (const uint8_t*)aptr;
 	const uint8_t* b = (const uint8_t*)bptr;
 
 	for(size_t i = 0; i < size; i++)
-    {
+  {
 		if(a[i] < b[i])
 			return -1;
 		else if(b[i] < a[i])

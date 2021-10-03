@@ -2,13 +2,11 @@
 #define LIBK_STDIO_H 1
 #include<stdint.h>
 #include<stdlib.h>
-#include<wchar.h>
 #include<limits.h>
 #include<stdbool.h>
 #include<stdarg.h>
 #include"graphics.h"
 #include"str.h"
-#include"utf8.h"
 
 #define EOF (-1)
 
@@ -17,12 +15,14 @@ extern Color fg_col, bg_col;
 
 void outb(uint16_t port, uint8_t val);
 uint8_t inb(uint16_t port);
-void io_wait(void);
+void outl(uint16_t port, uint32_t val);
+uint32_t inl(uint16_t port);
+void outw(uint16_t port, uint16_t val);
 
 void clearterm();
 int snapped_putch(wchar_t ch, int column, int row, Color fg, Color bg);
 int putchar(wchar_t ch);
-int printf(const wchar_t* restrict format, ...);
-int puts(wchar_t* str);
+int printf(const char* restrict format, ...);
+#define puts(str) printf("%s\n", str);
 
 #endif

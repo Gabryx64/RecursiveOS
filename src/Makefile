@@ -1,39 +1,41 @@
 KERNEL := kernel.elf
 
-CC = clang
 ASSEMBLER = nasm
 
-CFLAGS = -Wall -Wextra -Ofast -Os -pipe -target x86_64-unknown-pc -g
+CFLAGS = -Wall -Wextra -Werror -Ofast -pipe
 
-INTERNALLDFLAGS := 								\
-	-fno-pic -fno-pie							\
-	-Wl,-static,--no-dynamic-linker,-ztext		\
-	-nostdlib      								\
-	-Tlinker.ld    								\
-	-z max-page-size=0x1000
+INTERNALLDFLAGS := 													\
+	-pie																			\
+	--no-dynamic-linker												\
+	-nostdlib    															\
+	-Tlinker.ld  															\
+	-static																		\
+	-zmax-page-size=0x1000										\
+	-ztext
 
-INTERNALCFLAGS  :=       						\
-	-I.											\
-	-Ikernel/									\
-	-Ikernel/graphics							\
+INTERNALCFLAGS  :=     											\
+	-I.																				\
+	-Ikernel/																	\
+	-Ikernel/graphics													\
 	$(foreach d, $(wildcard libk/**), -I$d)		\
-	-std=gnu17           						\
-	-nostdlib      								\
-	-ffreestanding       						\
-	-fno-stack-protector 						\
-	-fno-pic -fpie      						\
-	-mno-red-zone
+	-std=gnu99       													\
+	-nostdlib    															\
+	-ffreestanding     												\
+	-fno-stack-protector 											\
+	-fno-pic -fpie    												\
+	-mno-red-zone															\
+	-MMD
 
 CFILES := $(shell find ./ -type f -name '*.c')
 ASMFILES := $(shell find ./ -type f -name '*.asm')
-OBJ    := $(CFILES:.c=.o) $(ASMFILES:.asm=.o)
+OBJ  := $(CFILES:.c=.o) $(ASMFILES:.asm=.o)
 
 .PHONY: all clean
 
 all: $(KERNEL)
 
 $(KERNEL): $(OBJ)
-	$(CC) $(INTERNALLDFLAGS) $(OBJ) -o $@
+	$(LD) $(INTERNALLDFLAGS) $(OBJ) -o $@
 
 stivale2.h:
 	wget https://github.com/stivale/stivale/raw/master/stivale2.h
@@ -45,4 +47,4 @@ stivale2.h:
 	$(ASSEMBLER) -felf64 $< -o $@
 
 clean:
-	rm -rf $(KERNEL) $(shell find ./ -type f -name '*.o') $(shell find ./ -type f -name '*.elf')
+	rm -rf $(KERNEL) $(shell find ./ -type f -name '*.o') $(shell find ./ -type f -name '*.d') $(shell find ./ -type f -name '*.elf')
