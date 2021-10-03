@@ -1,10 +1,10 @@
 #include"panic.h"
 #include"io.h"
 
-void __panic(char* file, const char* function, int line, char* msg)
+void panic(char* msg)
 {
   clearterm();
-  printf("Unhandled Exception:%s:%s:%d: `%s`", file, function, line, msg);
+  printf("Unhandled Exception: `%s`", msg);
 
   asm volatile("cli");
   while(1)
