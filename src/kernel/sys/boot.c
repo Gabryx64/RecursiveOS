@@ -67,10 +67,10 @@ void _start(struct stivale2_struct *stivale2_struct)
 
   fb_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 
-  if (fb_tag == NULL)
+  if(fb_tag == NULL)
   {
     while(1)
-      asm("hlt");
+      asm volatile("hlt");
   }
 
   fb = (uint32_t*)fb_tag->framebuffer_addr;
@@ -78,5 +78,5 @@ void _start(struct stivale2_struct *stivale2_struct)
   kmain();
 
   while(1)
-    asm("hlt");
+    asm volatile("hlt");
 }
