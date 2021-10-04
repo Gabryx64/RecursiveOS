@@ -63,6 +63,9 @@ void ISR_init()
   idt[20] = idt_make_entry((uint64_t)&exc_20);
   idt[30] = idt_make_entry((uint64_t)&exc_30);
 
+  idt[32] = idt_make_entry((uint64_t)&isr_irq_master);
+  idt[33] = idt_make_entry((uint64_t)&isr_irq_master);
+
   for(size_t i = 0x23; i < 0x28; i++)
     idt[i] = idt_make_entry((uint64_t)&isr_irq_master);
 
