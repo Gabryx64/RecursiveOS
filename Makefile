@@ -1,27 +1,31 @@
 KERNEL_HDD = os.hdd
 KERNEL_ISO = os.iso
 
+ifndef QEMU
+QEMU = qemu-system-x86_64
+endif
+
 .PHONY: clean all run
 
 all: $(KERNEL_HDD) $(KERNEL_ISO)
 
 run: $(KERNEL_HDD)
-	qemu-system-x86_64 -M q35 -m 2G -cpu qemu64,level=11 -drive file=$(KERNEL_HDD),format=raw
+	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -drive file=$(KERNEL_HDD),format=raw -serial stdio
 
 debug: $(KERNEL_HDD)
-	qemu-system-x86_64 -M q35 -m 2G -cpu qemu64,level=11 -drive file=$(KERNEL_HDD),format=raw -s -S
+	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -drive file=$(KERNEL_HDD),format=raw -s -S -serial stdio
 
 run-iso: $(KERNEL_HDD)
-	qemu-system-x86_64 -M q35 -m 2G -cpu qemu64,level=11 -cdrom $(KERNEL_ISO)
+	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -cdrom $(KERNEL_ISO) -serial stdio
 
 debug-iso: $(KERNEL_HDD)
-	qemu-system-x86_64 -M q35 -m 2G -cpu qemu64,level=11 -cdrom $(KERNEL_ISO) -s -S
-
-echfs:
-	git clone https://github.com/limine-bootloader/limine --branch=master
+	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -cdrom $(KERNEL_ISO) -s -S -serial stdio
 
 limine:
-	git clone https://github.com/echfs/echfs --branch=latest-binary
+	git clone https://github.com/limine-bootloader/limine --branch=v2.0-branch-binary
+
+echfs:
+	git clone https://github.com/echfs/echfs --branch=master
 
 src/kernel.elf:
 	$(MAKE) -C src

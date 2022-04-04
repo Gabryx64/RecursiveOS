@@ -1,7 +1,7 @@
 #ifndef __STIVALE__STIVALE2_H__
 #define __STIVALE__STIVALE2_H__
 
-#include <stdint.h>
+#include<stdint.h>
 
 struct stivale2_tag {
   uint64_t identifier;

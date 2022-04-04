@@ -1,7 +1,7 @@
 [submodule "limine"]
 	path = limine
 	url = https://github.com/limine-bootloader/limine
-	branch = latest-binary
+	branch = v2.0-branch-binary
 [submodule "echfs"]
 	path = echfs
 	url = https://github.com/echfs/echfs

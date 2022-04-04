@@ -15,10 +15,11 @@ INTERNALLDFLAGS := 													\
 
 INTERNALCFLAGS  :=     											\
 	-I.																				\
+	-Wno-unused-parameter											\
 	-Ikernel/																	\
 	-Ikernel/graphics													\
 	$(foreach d, $(wildcard libk/**), -I$d)		\
-	-std=gnu99       													\
+	-std=gnu99        												\
 	-nostdlib    															\
 	-ffreestanding     												\
 	-fno-stack-protector 											\
@@ -26,16 +27,16 @@ INTERNALCFLAGS  :=     											\
 	-mno-red-zone															\
 	-MMD
 
-CFILES := $(shell find ./ -type f -name '*.c')
+CFILES   := $(shell find ./ -type f -name '*.c')
 ASMFILES := $(shell find ./ -type f -name '*.asm')
-OBJ  := $(CFILES:.c=.o) $(ASMFILES:.asm=.o)
+OBJS     := $(CFILES:.c=.o) $(ASMFILES:.asm=.o)
+DEPS     := $(CFILES:.c=.d)
 
 .PHONY: all clean
-
 all: $(KERNEL)
 
-$(KERNEL): $(OBJ)
-	$(LD) $(INTERNALLDFLAGS) $(OBJ) -o $@
+$(KERNEL): $(OBJS)
+	$(LD) $(INTERNALLDFLAGS) $(OBJS) -o $@
 
 stivale2.h:
 	wget https://github.com/stivale/stivale/raw/master/stivale2.h
@@ -47,4 +48,6 @@ stivale2.h:
 	$(ASSEMBLER) -felf64 $< -o $@
 
 clean:
-	rm -rf $(KERNEL) $(shell find ./ -type f -name '*.o') $(shell find ./ -type f -name '*.d') $(shell find ./ -type f -name '*.elf')
+	$(RM) -rf $(KERNEL)
+	$(RM) -rf $(OBJS)
+	$(RM) -rf $(DEPS)

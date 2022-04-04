@@ -1,12 +1,11 @@
 #include"panic.h"
-#include"io.h"
+#include"log.h"
 
 void panic(char* msg)
 {
-  clearterm();
-  printf("Unhandled Exception: `%s`", msg);
+  log$(PANIC, "{}", msg);
 
-  asm volatile("cli");
+  __asm__ volatile("cli");
   while(1)
     ;
 }

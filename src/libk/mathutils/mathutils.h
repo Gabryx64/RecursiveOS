@@ -5,9 +5,7 @@
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
 
-#define floor(x) ((int64_t)x)
-
-long double pow(long double base, long double power);
-long double log(long double n);
+#define abs(x)   (x < 0 ? -x : x)
+#define trunc(x) ((int64_t)x)
 
 #endif

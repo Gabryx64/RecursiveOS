@@ -1,5 +1,5 @@
-#ifndef LIBK_STDIO_H
-#define LIBK_STDIO_H 1
+#ifndef LIBK_IO_H
+#define LIBK_IO_H 1
 #include<stdint.h>
 #include<stdlib.h>
 #include<limits.h>
@@ -20,8 +20,8 @@ uint32_t inl(uint16_t port);
 void outw(uint16_t port, uint16_t val);
 
 void clearterm();
-int snapped_putch(wchar_t ch, int column, int row, Color fg, Color bg);
-int putchar(wchar_t ch);
+int snapped_putch(char ch, int column, int row, Color fg, Color bg);
+int putchar(char ch);
 int printf(const char* restrict format, ...);
 #define puts(str) printf("%s\n", str);
 

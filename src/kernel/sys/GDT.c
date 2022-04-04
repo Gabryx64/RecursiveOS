@@ -1,16 +1,17 @@
-#include "GDT.h"
+#include"GDT.h"
+#include"log.h"
 
 volatile struct gdt_descriptor gdt[8];
 volatile struct gdt_pointer gdtr = { .limit = sizeof(gdt) - 1, .base = (uint64_t)gdt };
 
 void GDT_load()
 {
-  asm volatile("lgdt %0"
+  __asm__ volatile("lgdt %0"
     :
     : "m"(gdtr)
     : "memory");
 
-  asm volatile(
+  __asm__ volatile(
     "mov %%rsp, %%rax\n"
     "push $0x10\n"
     "push %%rax\n"
@@ -35,7 +36,7 @@ void GDT_init()
 {
   gdt[1] = (volatile struct gdt_descriptor){ .access = 0b10011010, .granularity = 0b00100000 };
   gdt[2] = (volatile struct gdt_descriptor){ .access = 0b10010010, .granularity = 0 };
-  puts("Loading GDT...");
+  log$(INFO, "Loading GDT...");
   GDT_load();
-  puts("GDT loaded!");
+  log$(INFO, "GDT loaded!");
 }

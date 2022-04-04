@@ -1,5 +1,6 @@
 #include"IDT.h"
 #include"exceptions.h"
+#include"log.h"
 
 static volatile struct idt_descriptor idt[256];
 static volatile struct idt_pointer idtr = { .size = 256 * sizeof(struct idt_descriptor), .addr = (uint64_t)idt };
@@ -20,7 +21,7 @@ void PIC_remap(void)
 
   outb(0x21, 0x0);
   outb(0xA1, 0x0);
-  puts("IRQs Remapped");
+  log$(INFO, "IRQs Remapped");
 }
 
 static struct idt_descriptor idt_make_entry(uint64_t offset)
@@ -75,18 +76,18 @@ void ISR_init()
 
 void IDT_load()
 {
-  asm volatile("lidt %0"
+  __asm__ volatile("lidt %0"
     :
     : "m"(idtr));
 }
 
 void IDT_init()
 {
-  puts("Initializing IDT...");
-  puts("Loading ISR...");
+  log$(INFO, "Initializing IDT...");
+  log$(INFO, "Loading ISR...");
   ISR_init();
-  puts("Loading IDT...");
+  log$(INFO, "Loading IDT...");
   IDT_load();
-  puts("IDT loaded!");
-  asm volatile("sti");
+  log$(INFO, "IDT loaded!");
+  __asm__ volatile("sti");
 }

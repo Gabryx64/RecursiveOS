@@ -4,41 +4,46 @@ int current_col = 0, current_row = 0;
 
 void outb(uint16_t port, uint8_t val)
 {
-  asm volatile ("outb %0, %1"
-				  :
-				  : "a"(val), "Nd"(port) );
+  __asm__ volatile(
+    "outb %0, %1"
+		:
+		: "a"(val), "Nd"(port) );
 }
 
 uint8_t inb(uint16_t port)
 {
   uint8_t ret;
-  asm volatile ("inb %1, %0"
-          : "=a"(ret)
-          : "Nd"(port) );
+  __asm__ volatile(
+    "inb %1, %0"
+    : "=a"(ret)
+    : "Nd"(port) );
   return ret;
 }
 
 void outl(uint16_t port, uint32_t val)
 {
-  asm volatile ("out %0, %1"
-				  :
-				  : "a"(val), "d"(port) );
+  __asm__ volatile(
+    "out %0, %1"
+		:
+		: "a"(val), "d"(port) );
 }
 
 uint32_t inl(uint16_t port)
 {
   uint32_t ret;
-  asm volatile ("in %1, %0"
-          : "=a"(ret)
-          : "d"(port) );
+  __asm__ volatile(
+    "in %1, %0"
+    : "=a"(ret)
+    : "d"(port) );
   return ret;
 }
 
 void outw(uint16_t port, uint16_t val)
 {
-  asm volatile ("outw %0, %1"
-				  :
-				  : "a"(val), "d"(port) );
+  __asm__ volatile(
+    "outw %0, %1"
+		:
+		: "a"(val), "d"(port) );
 }
 
 void clearterm()
@@ -48,7 +53,7 @@ void clearterm()
   current_row = 0;
 }
 
-int snapped_putch(wchar_t ch, int column, int row, Color fg, Color bg)
+int snapped_putch(char ch, int column, int row, Color fg, Color bg)
 {
   int x = column * 8, y = row * 8;
 
@@ -62,11 +67,11 @@ int snapped_putch(wchar_t ch, int column, int row, Color fg, Color bg)
 
 bool reading_escape_code = false;
 
-int putchar(wchar_t ch)
+int putchar(char ch)
 {
   int ret = ch;
 
-  if(ch >= ' ')
+	if(ch >= ' ')
 	{
     ret = snapped_putch(ch, current_col, current_row, fg_col, bg_col);
     
@@ -79,54 +84,54 @@ int putchar(wchar_t ch)
   {
 		switch(ch)
 		{
-			case L'\a':
+			case '\a':
     	{
-				// Implement "Bell"
+				// TODO: Implement "Bell"
     	} break;
 
-			case L'\b':
+			case '\b':
     	{
 				current_col--;
-				snapped_putch(L' ', current_col, current_row, fg_col, bg_col);
+				snapped_putch(' ', current_col, current_row, fg_col, bg_col);
 				current_col--;
     	} break;
 
-			case L'\t':
+			case '\t':
     	{
 				current_col += 4;
     	} break;
 
-			case L'\f':
+			case '\f':
 			{
 				clearterm();
 			} break;
 
-			case L'\v':
+			case '\v':
 			{
 				current_row++;
     	} break;
 
-			case L'\n':
+			case '\n':
     	{
 				current_row++;
 				current_col = 0;
     	} break;
 
-			case L'\r':
+			case '\r':
     	{
 				current_col = 0;
     	} break;
 
-			case L'\033':
-			{
-
-			} break;
+      case '\e':
+      {
+        // TODO: Implement ANSI Escape Codes
+      } break;
 		}
   }
 
   while(current_col >= 640)
   {
-    current_col -= 640;
+    current_col = 0;
     current_row++;
   }
 
@@ -135,72 +140,12 @@ int putchar(wchar_t ch)
 
   return ret;
 }
-
-static uint8_t count_ones(uint8_t data)
-{
-	uint8_t ones = 0;
-	for(size_t j = 0; (data >> (7 - j)) & 1 && j < 8; j++)
-		ones++;
-
-	return ones;
-}
  
 static bool print(const char* data, size_t length)
 {
 	for(size_t i = 0; i < length; i++)
 	{
-		uint8_t ones = count_ones((uint8_t)data[i]);
-
-		wchar_t ch;
-		switch(ones)
-		{
-			case 0:
-			{
-				ch = (wchar_t)data[i];
-			} break;
-
-			case 2:
-			{
-				if(i + 1 >= length || count_ones((uint8_t)data[i + 1] != 1))
-					return false;
-
-				ch = ((wchar_t)data[i] & 0b00011111) << 6;
-				ch |= (wchar_t)data[i + 1] & 0b00111111;
-
-				i++;
-			} break;
-
-			case 3:
-			{
-				if(i + 2 >= length || count_ones((uint8_t)data[i + 1] != 1) ||
-					 count_ones((uint8_t)data[i + 2] != 1))
-					return false;
-
-				ch = ((wchar_t)data[i] & 0b00001111) << 12;
-				ch |= ((wchar_t)data[i + 1] & 0b00111111) << 6;
-				ch |= (wchar_t)data[i + 2] & 0b00111111;
-
-				i += 2;
-			} break;
-
-			case 4:
-			{
-				if(i + 3 >= length || count_ones((uint8_t)data[i + 1] != 1) ||
-					 count_ones((uint8_t)data[i + 2] != 1) || count_ones((uint8_t)data[i + 3] != 1))
-					return false;
-
-				ch = ((wchar_t)data[i] & 0b00000111) << 18;
-				ch |= ((wchar_t)data[i + 1] & 0b00111111) << 12;
-				ch |= ((wchar_t)data[i + 2] & 0b00111111) << 6;
-				ch |= (wchar_t)data[i + 3] & 0b00111111;
-
-				i += 3;
-			} break;
-
-			default: return false;
-		}
-
-		if(putchar(ch) == EOF)
+		if(putchar(data[i]) == EOF)
 			return false;
 	}
 
@@ -255,11 +200,11 @@ int printf(const char* restrict format, ...)
 				return -1;
 			}
 
-			if(!print((char*)&c, sizeof(c)))
+			if(!print((char*)&c, 1))
 				return -1;
 			written++;
 		}
-    else if(*format == 's')
+		else if(*format == 's')
     {
 			format++;
 
@@ -276,15 +221,13 @@ int printf(const char* restrict format, ...)
 
 			written += len;
 		}
-    else
+		else
     {
 			format = format_begun_at;
 			size_t len = strlen(format);
 
 			if(maxrem < len)
-      {
 				return -1;
-			}
 
 			if(!print(format, len))
 				return -1;

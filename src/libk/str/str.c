@@ -1,4 +1,5 @@
-#include <str.h>
+#include"str.h"
+#include"log.h"
  
 size_t strlen(const char* str)
 {
@@ -26,12 +27,11 @@ int memcmp(const void* aptr, const void* bptr, size_t size)
 	return 0;
 }
 
-void* memset(void* bufptr, int value, size_t size)
+void* memset(void* bufptr, uint8_t value, size_t size)
 {
 	uint8_t* buf = (uint8_t*)bufptr;
-
-	for (size_t i = 0; i < size; i++)
-		buf[i] = (uint8_t)value;
+	for(size_t i = 0; i < size; i++)
+		buf[i] = value;
 
 	return bufptr;
 }
@@ -45,4 +45,190 @@ void* memcpy(void* restrict dstptr, const void* restrict srcptr, size_t size)
 		dst[i] = src[i];
 
 	return dstptr;
+}
+
+char* btoa(char buf[4], unsigned char n)
+{
+	size_t i = 0;
+
+	while(n != 0)
+	{
+		buf[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	if (i == 0)
+    buf[i++] = '0';
+
+	buf[i] = '\0';
+
+	for(size_t j = 0; j < i / 2; j++)
+	{
+		char tmp = buf[j];
+		buf[j] = buf[i - j - 1];
+		buf[i - j - 1] = tmp;
+	}
+
+	return buf;
+}
+
+char* stoa(char buf[7], short n)
+{
+	size_t i = 0;
+
+	while(n != 0)
+	{
+		buf[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	if (i == 0)
+    buf[i++] = '0';
+
+	if(n < 0)
+	{
+		buf[i++] = '-';
+		n = -n;
+	}
+
+	buf[i] = '\0';
+
+	for(size_t j = 0; j < i / 2; j++)
+	{
+		char tmp = buf[j];
+		buf[j] = buf[i - j - 1];
+		buf[i - j - 1] = tmp;
+	}
+
+	return buf;
+}
+
+char* ustoa(char buf[7], unsigned short n)
+{
+	size_t i = 0;
+
+	while(n != 0)
+	{
+		buf[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	if (i == 0)
+    buf[i++] = '0';
+
+	buf[i] = '\0';
+
+	for(size_t j = 0; j < i / 2; j++)
+	{
+		char tmp = buf[j];
+		buf[j] = buf[i - j - 1];
+		buf[i - j - 1] = tmp;
+	}
+
+	return buf;
+}
+
+char* itoa(char buf[12], int n)
+{
+	size_t i = 0;
+
+	while(n != 0)
+	{
+		buf[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	if (i == 0)
+    buf[i++] = '0';
+
+	if(n < 0)
+	{
+		buf[i++] = '-';
+		n = -n;
+	}
+
+	buf[i] = '\0';
+
+	for(size_t j = 0; j < i / 2; j++)
+	{
+		char tmp = buf[j];
+		buf[j] = buf[i - j - 1];
+		buf[i - j - 1] = tmp;
+	}
+	
+	return buf;
+}
+
+char* utoa(char buf[11], unsigned n)
+{
+	size_t i = 0;
+
+	while(n != 0)
+	{
+		buf[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	if (i == 0)
+    buf[i++] = '0';
+
+	buf[i] = '\0';
+
+	for(size_t j = 0; j < i / 2; j++)
+	{
+		char tmp = buf[j];
+		buf[j] = buf[i - j - 1];
+		buf[i - j - 1] = tmp;
+	}
+
+	return buf;
+}
+
+char* ltoa(char buf[21], long n)
+{
+	size_t i = 0;
+
+	while(n != 0)
+	{
+		buf[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	if (i == 0)
+    buf[i++] = '0';
+
+	if(n < 0)
+	{
+		buf[i++] = '-';
+		n = -n;
+	}
+
+	buf[i] = '\0';
+
+	for(size_t j = 0; j < i / 2; j++)
+	{
+		char tmp = buf[j];
+		buf[j] = buf[i - j - 1];
+		buf[i - j - 1] = tmp;
+	}
+
+	return buf;
+}
+
+char* ultoa(char buf[21], unsigned long n)
+{
+	size_t i = 0;
+
+	while(n != 0)
+	{
+		buf[i++] = (n % 10) + '0';
+		n /= 10;
+	}
+	if (i == 0)
+    buf[i++] = '0';
+
+	buf[i] = '\0';
+
+	for(size_t j = 0; j < i / 2; j++)
+	{
+		char tmp = buf[j];
+		buf[j] = buf[i - j - 1];
+		buf[i - j - 1] = tmp;
+	}
+
+	return buf;
 }

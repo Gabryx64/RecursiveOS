@@ -5,6 +5,8 @@
 #include"GDT.h"
 #include"interrupts/IDT.h"
 #include"memory/PMM.h"
+#include"panic.h"
+#include"portio.h"
 
 static uint8_t stack[4096];
 
@@ -30,7 +32,7 @@ static struct stivale2_header stivale_hdr =
   .tags = (uintptr_t)&framebuffer_hdr_tag
 };
 
-void *stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
+void* stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
 {
   struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
   while(1)
@@ -57,26 +59,33 @@ Color fg_col, bg_col;
 
 void _start(struct stivale2_struct *stivale2_struct)
 {
+  fb_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+
   // To display messages
   fg_col = UINT_RGB(0xFFFFFF);
   bg_col = UINT_RGB(0x000000);
 
+	serial_init();
+
   GDT_init();
   IDT_init();
-  // PMM_init();
-
-  fb_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+  
+  volatile struct stivale2_struct_tag_memmap* memory_map = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+    
+  PMM_init(memory_map);
+  assert(PMM_alloc0(1), "Error while initializing PMM");
 
   if(fb_tag == NULL)
   {
-    while(1)
-      asm volatile("hlt");
+    while(1) __asm__ volatile("hlt");
   }
 
   fb = (uint32_t*)fb_tag->framebuffer_addr;
 
+	current_col = 0;
+  current_row = 0;
+	clearterm();
   kmain();
 
-  while(1)
-    asm volatile("hlt");
+  while(1) __asm__ volatile("hlt");
 }
