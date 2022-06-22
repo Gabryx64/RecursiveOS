@@ -3,6 +3,10 @@
 #include<stdint.h>
 #include"sys/panic.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void exception_handler(uint64_t irq);
 void exc_0();
 void exc_1();
@@ -25,5 +29,9 @@ void exc_18();
 void exc_19();
 void exc_20();
 void exc_30();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

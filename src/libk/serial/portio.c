@@ -39,7 +39,7 @@ uint8_t serial_read()
 	return inb(PORT);
 }
 
-void serial_writestr(char* str)
+void serial_writestr(const char* str)
 {
 	while(*str)
     serial_write(*str++);

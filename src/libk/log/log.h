@@ -1,6 +1,26 @@
 #ifndef LIBK_LOG_H
 #define LIBK_LOG_H 1
+#include<stdbool.h>
+
 #include"map_macro.h"
+
+#ifdef __cplusplus
+
+template<typename... Types>
+void log$(bool x, Types... xs);
+
+template<typename... Types>
+void log$(long x, Types... xs);
+
+template<typename... Types>
+void log$(unsigned long x, Types... xs);
+
+template<typename... Types>
+void log$(const char* x, Types... xs);
+
+#endif
+
+#ifndef __cplusplus
 
 typedef enum
 {
@@ -22,7 +42,7 @@ typedef struct
 	ArgType type;
 	union
 	{
-		_Bool b;
+		bool b;
 		char c;
 		unsigned char uc;
 		short s;
@@ -36,7 +56,7 @@ typedef struct
 	} val;
 } Arg;
 
-inline Arg arg_bool(_Bool b)
+inline Arg arg_bool(bool b)
 {
 	Arg arg;
 	arg.type = ARG_TYPE_BOOL;
@@ -125,25 +145,27 @@ inline Arg arg_voidptr(void* p)
 }
 
 #define ARG(x) _Generic((x),                                         \
-          _Bool: arg_bool,               unsigned char: arg_byte,    \
+          bool: arg_bool,               unsigned char: arg_byte,    \
            char: arg_char,                 signed char: arg_char,    \
       short int: arg_short,         unsigned short int: arg_ushort,  \
             int: arg_int,                 unsigned int: arg_uint,    \
        long int: arg_long,           unsigned long int: arg_ulong,   \
           char*: arg_charptr,                    void*: arg_voidptr, \
- 	  const _Bool: arg_bool,         const unsigned char: arg_byte,    \
+ 	  const bool: arg_bool,         const unsigned char: arg_byte,    \
      const char: arg_char,           const signed char: arg_char,    \
 const short int: arg_short,   const unsigned short int: arg_ushort,  \
       const int: arg_int,           const unsigned int: arg_uint,    \
  const long int: arg_long,     const unsigned long int: arg_ulong,   \
     const char*: arg_charptr,              const void*: arg_voidptr, \
-		  default: arg_bool)(x),
+		    default: arg_voidptr)(x),
 
-#define ARGS_(...) (Arg[]){}
-#define ARGS_N(...) (Arg[]){ MAP_MACRO(ARG, ##__VA_ARGS__) }
+#define ARGS_(...) (Arg*)(Arg[]){}
+#define ARGS_N(...) (Arg*)(Arg[]){ MAP_MACRO(ARG, ##__VA_ARGS__) }
 
-#define log$(type, fmt, ...) _log$(__FILE__ ":" to_string(__LINE__) " [" #type "] " fmt "\n", ARGS_##__VA_OPT__(N)(__VA_ARGS__))
+#define log$(type, fmt, ...) _log(__FILE__ " [" #type "] " fmt "\n", ARGS_##__VA_OPT__(N)(__VA_ARGS__))
 
-void _log$(const char* restrict fmt, Arg args[]);
+void _log(const char* fmt, Arg args[]);
+
+#endif
 
 #endif

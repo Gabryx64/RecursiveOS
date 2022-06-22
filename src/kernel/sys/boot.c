@@ -7,6 +7,7 @@
 #include"memory/PMM.h"
 #include"panic.h"
 #include"portio.h"
+#include "log.h"
 
 static uint8_t stack[4096];
 
@@ -53,7 +54,7 @@ void* stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
 
 struct stivale2_struct_tag_framebuffer* fb_tag;
 volatile uint32_t* fb;
-extern void kmain(void);
+extern void kmain();
 
 Color fg_col, bg_col;
 
@@ -70,14 +71,18 @@ void _start(struct stivale2_struct *stivale2_struct)
   GDT_init();
   IDT_init();
   
-  volatile struct stivale2_struct_tag_memmap* memory_map = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
-    
-  PMM_init(memory_map);
-  assert(PMM_alloc0(1), "Error while initializing PMM");
+  {
+    struct stivale2_struct_tag_memmap* memory_map = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);  
+    PMM_init(memory_map);
+    void* ptr = PMM_alloc(1);
+    assert(ptr, "Error while initializing PMM");
+    PMM_free(ptr, 1);
+  }
 
   if(fb_tag == NULL)
   {
-    while(1) __asm__ volatile("hlt");
+    while(1)
+      __asm__ volatile("hlt");
   }
 
   fb = (uint32_t*)fb_tag->framebuffer_addr;
@@ -87,5 +92,6 @@ void _start(struct stivale2_struct *stivale2_struct)
 	clearterm();
   kmain();
 
-  while(1) __asm__ volatile("hlt");
+  while(1)
+    __asm__ volatile("hlt");
 }

@@ -6,6 +6,7 @@
 #define MIN(x, y) (x < y ? x : y)
 
 #define abs(x)   (x < 0 ? -x : x)
-#define trunc(x) ((int64_t)x)
+
+#define DIV_RNDUP(x, y) ((x % y) ? (x / y + 1) : (x / y))
 
 #endif

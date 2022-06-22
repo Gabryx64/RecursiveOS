@@ -4,6 +4,10 @@
 #include<stdint.h>
 #include<io.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void isr(void);
 extern void isr_irq_master(void);
 extern void isr_irq_slave(void);
@@ -26,5 +30,9 @@ struct idt_pointer
 } __attribute__((packed));
 
 void IDT_init();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

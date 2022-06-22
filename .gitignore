@@ -1,4 +1,5 @@
-.vscode
+.cache
+compile_commands.json
 iso_root/*
 *.o
 *.d

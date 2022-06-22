@@ -10,6 +10,10 @@
 
 #define EOF (-1)
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern int current_col, current_row;
 extern Color fg_col, bg_col;
 
@@ -22,7 +26,11 @@ void outw(uint16_t port, uint16_t val);
 void clearterm();
 int snapped_putch(char ch, int column, int row, Color fg, Color bg);
 int putchar(char ch);
-int printf(const char* restrict format, ...);
+int printf(const char* format, ...);
 #define puts(str) printf("%s\n", str);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

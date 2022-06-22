@@ -5,10 +5,18 @@
 
 #define PORT 0x3f8
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void serial_init(void);
 void serial_write(char c);
 void serial_writebyte(uint8_t c);
 uint8_t serial_read();
-void serial_writestr(char* str);
+void serial_writestr(const char* str);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

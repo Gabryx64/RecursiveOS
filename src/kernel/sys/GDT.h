@@ -3,6 +3,10 @@
 #include<stdint.h>
 #include"io.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct gdt_pointer
 {
   uint16_t limit;
@@ -20,5 +24,9 @@ struct gdt_descriptor
 } __attribute__((packed));
 
 void GDT_init();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

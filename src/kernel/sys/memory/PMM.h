@@ -4,13 +4,18 @@
 #include<stivale2.h>
 #include"sys/sys.h"
 
-#define PAGE_SIZE 0x1000
-#define MMAP_IO_BASE ((uintptr_t)0xffff800000000000)
-#define MMAP_KERNEL_BASE ((uintptr_t)0xffffffff80000000)
+#define PAGE_SIZE 4096
 
-void PMM_free(void* addr, size_t pages);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void* PMM_alloc(size_t pages);
-void* PMM_alloc0(size_t pages);
-void PMM_init(volatile struct stivale2_struct_tag_memmap* memory_map);
+void PMM_free(void* ptr, size_t pages);
+void PMM_init(struct stivale2_struct_tag_memmap* memory_map);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

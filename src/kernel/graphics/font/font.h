@@ -1,7 +1,10 @@
 #ifndef FONT_H
 #define FONT_H 1
-
 #include<stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 static uint8_t font[][8] =
 {
@@ -134,5 +137,9 @@ static uint8_t font[][8] =
   { 0x00, 0x00, 0x00, 0x6E, 0x3B, 0x00, 0x00, 0x00 },   // U+007E (~)
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },   // U+007F
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

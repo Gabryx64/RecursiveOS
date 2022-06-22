@@ -4,7 +4,7 @@
 
 #include<stdint.h>
 
-void _log$(const char* restrict fmt, Arg args[])
+void _log(const char* fmt, Arg args[])
 {
 	size_t len = strlen(fmt);
 	size_t args_idx = 0;
@@ -85,8 +85,8 @@ void _log$(const char* restrict fmt, Arg args[])
 							
 						case ARG_TYPE_VOIDPTR:
 						{
-							char buf[21];
-							ultoa(buf, (uintptr_t)arg.val.p);
+							char buf[17];
+							ptrtoa(buf, (uintptr_t)arg.val.p);
 							serial_writestr(buf);
 						}	break;
 					}
