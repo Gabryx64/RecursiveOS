@@ -1,94 +1,59 @@
 #include<stdint.h>
 #include<stddef.h>
-#include<stivale2.h>
+#include<limine.h>
 #include"sys.h"
 #include"GDT.h"
 #include"interrupts/IDT.h"
 #include"memory/PMM.h"
 #include"panic.h"
 #include"portio.h"
-#include "log.h"
+#include"log.h"
 
-static uint8_t stack[4096];
-
-static struct stivale2_header_tag_framebuffer framebuffer_hdr_tag =
+static volatile struct limine_framebuffer_request fb_req =
 {
-  .tag =
-  {
-    .identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
-    .next = 0
-  },
-
-  .framebuffer_width  = 0,
-  .framebuffer_height = 0,
-  .framebuffer_bpp  = 0
+  .id = LIMINE_FRAMEBUFFER_REQUEST,
+  .revision = 0
 };
 
-__attribute__((section(".stivale2hdr"), used))
-static struct stivale2_header stivale_hdr =
+static volatile struct limine_memmap_request mmap_req =
 {
-  .entry_point = 0,
-  .stack = (uintptr_t)stack + sizeof(stack),
-  .flags = 0,
-  .tags = (uintptr_t)&framebuffer_hdr_tag
+  .id = LIMINE_MEMMAP_REQUEST,
+  .revision = 0
 };
 
-void* stivale2_get_tag(struct stivale2_struct *stivale2_struct, uint64_t id)
-{
-  struct stivale2_tag *current_tag = (void *)stivale2_struct->tags;
-  while(1)
-  {
-    if(current_tag == NULL)
-    {
-      return NULL;
-    }
-
-    if(current_tag->identifier == id)
-    {
-      return current_tag;
-    }
-
-    current_tag = (void *)current_tag->next;
-  }
-}
-
-struct stivale2_struct_tag_framebuffer* fb_tag;
 volatile uint32_t* fb;
 extern void kmain();
 
 Color fg_col, bg_col;
 
-void _start(struct stivale2_struct *stivale2_struct)
+struct limine_framebuffer* _fb;
+void _start(void)
 {
-  fb_tag = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+	serial_init();
+  assert(fb_req.response != NULL &&
+    fb_req.response->framebuffer_count > 0,
+    "Couldn't get a framebuffer");
+  assert(mmap_req.response != NULL, "Couldn't get memmap");
 
-  // To display messages
   fg_col = UINT_RGB(0xFFFFFF);
   bg_col = UINT_RGB(0x000000);
-
-	serial_init();
 
   GDT_init();
   IDT_init();
   
+  PMM_init(mmap_req.response);
+
   {
-    struct stivale2_struct_tag_memmap* memory_map = stivale2_get_tag(stivale2_struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);  
-    PMM_init(memory_map);
     void* ptr = PMM_alloc(1);
     assert(ptr, "Error while initializing PMM");
-    PMM_free(ptr, 1);
+    //PMM_free(ptr, 1);
   }
-
-  if(fb_tag == NULL)
-  {
-    while(1)
-      __asm__ volatile("hlt");
-  }
-
-  fb = (uint32_t*)fb_tag->framebuffer_addr;
+  _fb = fb_req.response->framebuffers[0];
+  fb = (uint32_t*)_fb->address;
 
 	current_col = 0;
   current_row = 0;
+
 	clearterm();
   kmain();
 

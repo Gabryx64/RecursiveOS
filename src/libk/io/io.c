@@ -57,7 +57,7 @@ int snapped_putch(char ch, int column, int row, Color fg, Color bg)
 {
   int x = column * 8, y = row * 8;
 
-  if(x >= 640 || y >= 480)
+  if((size_t)x >= _fb->width || (size_t)y >= _fb->height)
     return -1;
 
   putch(ch, x, y, fg, bg);
@@ -129,13 +129,13 @@ int putchar(char ch)
 		}
   }
 
-  while(current_col >= 640)
+  while((size_t)current_col >= _fb->width)
   {
     current_col = 0;
     current_row++;
   }
 
-  if(current_row >= 480)
+  if((size_t)current_row >= _fb->height)
     return -1;
 
   return ret;

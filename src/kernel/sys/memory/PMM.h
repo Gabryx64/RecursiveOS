@@ -1,7 +1,7 @@
 #ifndef PMM_H
 #define PMM_H 1
 #include<stddef.h>
-#include<stivale2.h>
+#include<limine.h>
 #include"sys/sys.h"
 
 #define PAGE_SIZE 4096
@@ -11,8 +11,8 @@ extern "C" {
 #endif
 
 void* PMM_alloc(size_t pages);
-void PMM_free(void* ptr, size_t pages);
-void PMM_init(struct stivale2_struct_tag_memmap* memory_map);
+int PMM_free(void* ptr, size_t pages);
+void PMM_init(struct limine_memmap_response* memory_map);
 
 #ifdef __cplusplus
 }

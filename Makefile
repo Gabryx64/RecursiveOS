@@ -1,64 +1,84 @@
-KERNEL_HDD = os.hdd
-KERNEL_ISO = os.iso
+ARCH ?= x86_64
 
-ifndef QEMU
-QEMU = qemu-system-x86_64
+# Check that the architecture is supported and set relevant variables.
+ifeq ($(ARCH),x86_64)
+    override EFI_ARCH := X64
+else
+    $(error Architecture $(ARCH) not supported)
 endif
 
-.PHONY: clean all run
+.PHONY: all
+all: recos.iso
 
-all: $(KERNEL_HDD) $(KERNEL_ISO)
+.PHONY: all-hdd
+all-hdd: recos.hdd
 
-run: $(KERNEL_HDD)
-	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -drive file=$(KERNEL_HDD),format=raw -serial stdio
+.PHONY: run
+run: recos.iso
+	qemu-system-$(ARCH) -serial stdio -vga none -device virtio-vga,xres=960,yres=720 -M q35 -m 2G -cdrom recos.iso -boot d
 
-debug: $(KERNEL_HDD)
-	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -drive file=$(KERNEL_HDD),format=raw -s -S -serial stdio
+.PHONY: run-uefi
+run-uefi: ovmf-$(EFI_ARCH) recos.iso
+	qemu-system-$(ARCH) -serial stdio -vga none -device virtio-vga,xres=960,yres=720 -M q35 -m 2G -bios ovmf-$(EFI_ARCH)/OVMF.fd -cdrom recos.iso -boot d
 
-run-iso: $(KERNEL_HDD)
-	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -cdrom $(KERNEL_ISO) -serial stdio
+.PHONY: run-hdd
+run-hdd: recos.hdd
+	qemu-system-$(ARCH) -serial stdio -vga none -device virtio-vga,xres=960,yres=720 -M q35 -m 2G -hda recos.hdd
 
-debug-iso: $(KERNEL_HDD)
-	$(QEMU) -M q35 -m 2G -cpu qemu64,level=11 -cdrom $(KERNEL_ISO) -s -S -serial stdio
+.PHONY: run-hdd-uefi
+run-hdd-uefi: ovmf-$(EFI_ARCH) recos.hdd
+	qemu-system-$(ARCH) -serial stdio -vga none -device virtio-vga,xres=960,yres=720 -M q35 -m 2G -bios ovmf-$(EFI_ARCH)/OVMF.fd -hda recos.hdd
+
+ovmf-$(EFI_ARCH):
+	mkdir -p ovmf-$(EFI_ARCH)
+	cd ovmf-$(EFI_ARCH) && curl -o OVMF-$(EFI_ARCH).zip https://efi.akeo.ie/OVMF/OVMF-$(EFI_ARCH).zip && 7z x OVMF-$(EFI_ARCH).zip
 
 limine:
-	git clone https://github.com/limine-bootloader/limine --branch=v2.0-branch-binary
-
-echfs:
-	git clone https://github.com/echfs/echfs --branch=master
-
-src/kernel.elf:
-	$(MAKE) -C src
-
-echfs/echfs-utils: echfs
-	make -C echfs echfs-utils
-
-limine/limine-install: limine
+	git clone https://github.com/limine-bootloader/limine.git --branch=v3.0-branch-binary --depth=1
 	make -C limine
 
-$(KERNEL_HDD): limine/limine-install echfs/echfs-utils src/kernel.elf
-	rm -f $(KERNEL_HDD)
-	dd if=/dev/zero bs=1M count=0 seek=64 of=$(KERNEL_HDD)
-	parted -s $(KERNEL_HDD) mklabel gpt
-	parted -s $(KERNEL_HDD) mkpart primary 2048s 100%
-	./echfs/echfs-utils -g -p0 $(KERNEL_HDD) quick-format 512
-	./echfs/echfs-utils -g -p0 $(KERNEL_HDD) import src/kernel.elf kernel.elf
-	./echfs/echfs-utils -g -p0 $(KERNEL_HDD) import limine.cfg limine.cfg
-	./echfs/echfs-utils -g -p0 $(KERNEL_HDD) import limine/limine.sys limine.sys
-	./limine/limine-install $(KERNEL_HDD)
-
-$(KERNEL_ISO): limine/limine-install echfs/echfs-utils src/kernel.elf
-	rm -rf $(KERNEL_ISO) iso_root
+.PHONY: kernel
+kernel:
+	$(MAKE) -C src
+	
+recos.iso: limine kernel
+	rm -rf iso_root
 	mkdir -p iso_root
-	cp -v src/kernel.elf limine.cfg limine/limine.sys \
-    	limine/limine-cd.bin limine/limine-eltorito-efi.bin iso_root/
+	cp src/kernel.elf \
+		limine.cfg limine/limine.sys limine/limine-cd.bin limine/limine-cd-efi.bin iso_root/
 	xorriso -as mkisofs -b limine-cd.bin \
-  	-no-emul-boot -boot-load-size 4 -boot-info-table \
-  	--efi-boot limine-eltorito-efi.bin \
-  	-efi-boot-part --efi-boot-image --protective-msdos-label \
-  	iso_root -o $(KERNEL_ISO)
-	./limine/limine-install $(KERNEL_ISO)
+		-no-emul-boot -boot-load-size 4 -boot-info-table \
+		--efi-boot limine-cd-efi.bin \
+		-efi-boot-part --efi-boot-image --protective-msdos-label \
+		iso_root -o recos.iso
+	limine/limine-deploy recos.iso
+	rm -rf iso_root
 
+recos.hdd: limine kernel
+	rm -f recos.hdd
+	dd if=/dev/zero bs=1M count=0 seek=64 of=recos.hdd
+	parted -s recos.hdd mklabel gpt
+	parted -s recos.hdd mkpart ESP fat32 2048s 100%
+	parted -s recos.hdd set 1 esp on
+	limine/limine-deploy recos.hdd
+	sudo losetup -Pf --show recos.hdd >loopback_dev
+	sudo mkfs.fat -F 32 `cat loopback_dev`p1
+	mkdir -p img_mount
+	sudo mount `cat loopback_dev`p1 img_mount
+	sudo mkdir -p img_mount/EFI/BOOT
+	sudo cp -v src/kernel.elf limine.cfg limine/limine.sys img_mount/
+	sudo cp -v limine/BOOT$(EFI_ARCH).EFI img_mount/EFI/BOOT/
+	sync
+	sudo umount img_mount
+	sudo losetup -d `cat loopback_dev`
+	rm -rf loopback_dev img_mount
+
+.PHONY: clean
 clean:
-	rm -rf $(KERNEL_HDD) $(KERNEL_ISO) iso_root
+	rm -rf iso_root recos.iso recos.hdd
 	$(MAKE) -C src clean
+
+.PHONY: distclean
+distclean: clean
+	rm -rf limine ovmf-$(EFI_ARCH)
+	$(MAKE) -C src distclean

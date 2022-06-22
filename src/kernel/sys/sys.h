@@ -1,3 +1,4 @@
+#include "limine.h"
 #ifndef SYS_H
 #define SYS_H 1
 #include<stdint.h>
@@ -6,7 +7,7 @@
 extern "C" {
 #endif
 
-extern struct stivale2_struct_tag_framebuffer* fb_tag;
+extern struct limine_framebuffer* _fb;
 extern volatile uint32_t* fb;
 
 #ifdef __cplusplus

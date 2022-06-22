@@ -2,6 +2,8 @@
 #include"font/font.h"
 #include"mathutils.h"
 
+#include<stddef.h>
+
 Color UINT_RGB(uint32_t color)
 {
   uint8_t* col = (uint8_t*)&color;
@@ -11,15 +13,16 @@ Color UINT_RGB(uint32_t color)
 
 void putpixel(int x, int y, Color color)
 {
-  fb[x + y * 640] = getcolor(color);
+  fb[x + y * _fb->width] = getcolor(color);
 }
 
 void clearscreen(Color col)
 {
+  
   int x, y;
-  for(y = 0; y < 480; y++)
+  for(y = 0; (size_t)y < _fb->height; y++)
   {
-    for(x = 0; x < 640; x++)
+    for(x = 0; (size_t)x < _fb->width; x++)
     {
       putpixel(x, y, col);
     }
@@ -30,12 +33,12 @@ void putch(char ch, int x, int y, Color fg, Color bg)
 {
   for(int i = 0; i < 8; i++)
   {
-    if(y + i >= 480)
+    if((size_t)(y + i) >= _fb->height)
       break;
 
     for(int j = 0; j < 8; j++)
     {
-      if(x + j >= 640)
+      if((size_t)(x + j) >= _fb->width)
         break;
 
       putpixel(x + j, y + i, ((font[(uint8_t)ch][i] >> j) & 1) == 1 ? fg : bg);

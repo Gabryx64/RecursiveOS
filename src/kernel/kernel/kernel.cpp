@@ -1,6 +1,10 @@
-#include"log.h"
+#include"vec.hpp"
+#include"io.h"
+#include"portio.h"
 
 extern "C" void kmain()
 {
-	log$(nullptr);
+    libk::Vec<char> x = { 'h', 'e', 'l', 'l', 'o', '!', '\n' };
+    x.push('\0');
+    printf("%s", x.begin());
 }

@@ -4,22 +4,6 @@
 
 #include"map_macro.h"
 
-#ifdef __cplusplus
-
-template<typename... Types>
-void log$(bool x, Types... xs);
-
-template<typename... Types>
-void log$(long x, Types... xs);
-
-template<typename... Types>
-void log$(unsigned long x, Types... xs);
-
-template<typename... Types>
-void log$(const char* x, Types... xs);
-
-#endif
-
 #ifndef __cplusplus
 
 typedef enum

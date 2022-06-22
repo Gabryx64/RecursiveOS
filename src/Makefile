@@ -15,6 +15,7 @@ INTERNALLDFLAGS := 			\
 	-ztext
 
 INTERNALCFLAGS  :=     						\
+	-I../limine								\
 	-I.										\
 	-Wno-unused-parameter					\
 	-Ikernel/								\
@@ -29,12 +30,14 @@ INTERNALCFLAGS  :=     						\
 	-MMD
 
 INTERNALCXXFLAGS  :=     					\
+	-I../limine								\
 	-I.										\
 	-Wno-unused-parameter					\
 	-Ikernel/								\
 	-Ikernel/graphics						\
 	$(foreach d, $(wildcard libk/**), -I$d)	\
 	-std=gnu++11        					\
+	-fno-exceptions							\
 	-nostdlib    							\
 	-ffreestanding     						\
 	-fno-stack-protector 					\
@@ -54,13 +57,10 @@ all: $(KERNEL)
 $(KERNEL): $(OBJS)
 	$(LD) $(INTERNALLDFLAGS) $(OBJS) -o $@
 
-stivale2.h:
-	wget https://github.com/stivale/stivale/raw/master/stivale2.h
-
-%.o: %.cpp stivale2.h
+%.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(INTERNALCXXFLAGS) -c $< -o $@
 
-%.o: %.c stivale2.h
+%.o: %.c
 	$(CC) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
 
 %.o: %.asm
