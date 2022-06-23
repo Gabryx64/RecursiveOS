@@ -1,7 +1,7 @@
 #include"panic.h"
 #include"log.h"
 
-void panic(char* msg)
+void panic(const char* msg)
 {
   log$(PANIC, "{}", msg);
 

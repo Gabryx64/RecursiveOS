@@ -6,6 +6,10 @@
 
 #ifndef __cplusplus
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
+
 typedef enum
 {
 	ARG_TYPE_BOOL,

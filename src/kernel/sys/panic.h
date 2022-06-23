@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 #define assert(expr, msg) if(!(expr)) panic(msg)
-void panic(char* msg);
+void panic(const char* msg);
 
 #ifdef __cplusplus
 }

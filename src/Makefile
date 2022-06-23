@@ -2,8 +2,8 @@ KERNEL := kernel.elf
 
 ASSEMBLER = nasm
 
-CFLAGS = -Wall -Wextra -Werror -Wno-stringop-overflow -O2 -pipe
-CXXFLAGS = -Wall -Wextra -Werror -Wno-stringop-overflow -O2 -pipe
+CFLAGS = -Wall -Wextra -Werror -O2 -pipe
+CXXFLAGS = -Wall -Wextra -Werror -O2 -pipe
 
 INTERNALLDFLAGS := 			\
 	-pie					\
