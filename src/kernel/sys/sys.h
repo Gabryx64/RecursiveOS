@@ -1,7 +1,7 @@
 #include "limine.h"
 #ifndef SYS_H
 #define SYS_H 1
-#include<stdint.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,12 +1,11 @@
 #ifndef LIBK_IO_H
 #define LIBK_IO_H 1
-#include<stdint.h>
-#include<stdlib.h>
-#include<limits.h>
-#include<stdbool.h>
-#include<stdarg.h>
-#include"graphics.h"
-#include"str.h"
+#include "graphics.h"
+#include "str.h"
+#include <limits.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #define EOF (-1)
 

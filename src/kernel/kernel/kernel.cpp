@@ -1,9 +1,3 @@
-#include"alloc.h"
-#include"io.h"
-#include"portio.h"
-#include"sys/panic.h"
+#include <sys/sys.h>
 
-extern "C" void kmain()
-{
-
-}
+extern "C" void kmain() {}

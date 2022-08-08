@@ -1,7 +1,7 @@
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H 1
-#include<stdint.h>
-#include"sys/panic.h"
+#include "sys/panic.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
